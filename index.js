@@ -43,7 +43,7 @@ function staticServer(root) {
     if (e.code !== 'ENOENT') throw e
   }
   return function (req, res, next) {
-    if (req.method !== 'GET' && req.method !== 'HEAD')
+    if (req.method !== 'GET' && req.method !== 'POST' && req.method !== 'HEAD')
       return next()
     var reqpath = isFile ? '' : url.parse(req.url).pathname
     var hasNoOrigin = !req.headers.origin
