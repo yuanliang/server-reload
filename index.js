@@ -253,14 +253,15 @@ ServerReload.start = function (options) {
       console.log('Mapping %s to "%s"', mountRule[0], mountPath)
   })
 
-  proxy.forEach(function (proxyRule) {
-    var proxyOpts = url.parse(proxyRule[1])
-    proxyOpts.via = true
-    proxyOpts.preserveHost = true
-    app.use(proxyRule[0], require('proxy-middleware')(proxyOpts))
-    if (LiveServer.logLevel >= 1)
-      console.log('Mapping %s to "%s"', proxyRule[0], proxyRule[1])
-  })
+  // Server Proxy
+  var proxyOpts = url.parse(proxy.target)
+  var proxyPath = proxy.path || '/'
+  proxyOpts.via = true
+  proxyOpts.preserveHost = true
+
+  app.use(proxyPath, require('proxy-middleware')(proxyOpts))
+  if (ServerReload.logLevel >= 1)
+    console.log('Mapping %s to "%s"', proxyPath, proxyOpts.href)
   app
     .use(staticServerHandler) // Custom static server
     .use(entryPoint(staticServerHandler, file))
